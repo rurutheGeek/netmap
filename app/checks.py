@@ -9,7 +9,8 @@ import json
 
 from . import model, uci
 
-ROUTES = ('192.168.10.0/24',)
+# サーバーの区画の経路は見ない。Flint 3 は vpn-01 の控えで、出すかどうかは
+# tailscale-standby が vpn-01 の生死で決める。
 # 流してはいけない経路。個人端末の区画を流すと、家の中の通信が Flint 3 の Tailscale を回る。
 NOT_ROUTES = ('192.168.40.0/24',)
 
@@ -37,7 +38,6 @@ def run(dump):
         'tailscale_to_lan': forwarding(firewall, 'tailscale', 'lan'),
         'tailscale_to_personal': forwarding(firewall, 'tailscale', 'personal'),
         'tailscale_lan_enabled': settings.get('lan_enabled') == '1',
-        **{f'advertise_{route}': route in routes for route in ROUTES},
         **{f'not_advertise_{route}': route not in routes for route in NOT_ROUTES},
     }
 
